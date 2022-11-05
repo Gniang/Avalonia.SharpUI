@@ -47,6 +47,13 @@ public static class ControlExtensions
         return control;
     }
 
+    /// <inheritdoc cref="ControlExtensions.SetBind"/>
+    public static TControl SetBind<TControl, T>(this TControl control, AvaloniaProperty prorperty, IObservableState<T> bindingItem, BindingMode mode = BindingMode.Default)
+    where TControl : IAvaloniaObject
+    {
+        control.Bind(prorperty, new Binding(nameof(IObservableState<T>.Value), mode) { Source = bindingItem });
+        return control;
+    }
 
     public static T OnClick<T>(this T button, Action<object?, RoutedEventArgs> action)
     where T : Button
