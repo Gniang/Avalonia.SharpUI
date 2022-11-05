@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -11,7 +12,6 @@ namespace Avalonia.SharpUI;
 
 public static class ControlExtensions
 {
-
     /// <summary>
     /// bind data to avalonia property.
     /// <para>eg.</para>
@@ -33,7 +33,7 @@ public static class ControlExtensions
     /// <param name="mode">binding mode.</param>
     /// <returns></returns>
     public static TControl SetBind<TControl, TViewModel>(this TControl control, AvaloniaProperty prorperty, TViewModel bindingViewModel, string bindingPath, BindingMode mode = BindingMode.Default)
-    where TControl : Control
+    where TControl : IAvaloniaObject
     {
         control.Bind(prorperty, new Binding(bindingPath, mode) { Source = bindingViewModel });
         return control;
@@ -41,7 +41,7 @@ public static class ControlExtensions
 
     /// <inheritdoc cref="ControlExtensions.SetBind"/>
     public static TControl SetBind<TControl, TViewModel>(this TControl control, AvaloniaProperty prorperty, IBinding bindingItem)
-    where TControl : Control
+    where TControl : IAvaloniaObject
     {
         control.Bind(prorperty, bindingItem);
         return control;
@@ -54,32 +54,6 @@ public static class ControlExtensions
         button.Click += new EventHandler<RoutedEventArgs>(action);
         return button;
     }
-
-
-    /// <summary>
-    /// subscribe event.
-    /// <para>
-    /// <example>
-    /// eg.
-    /// <code language="C#">
-    /// <para>
-    ///   Button.Click += (s, e) => { Debug.WriteLine("Clicked"); };
-    /// </para>
-    ///      ↓
-    /// <para>
-    ///   Button.On(nameof(Button.Click), (object? s, RoutedEventArgs e) => { Debug.WriteLine("Clicked"); } );
-    /// </para>
-    /// </code>
-    /// </example>
-    /// </para>
-    /// </summary>
-    //public static T On<T, TEvent>(this T control, string eventName, Action<object?, TEvent> eventHandler)
-    //where T : IControl
-    //where TEvent : EventArgs
-    //{
-    //    return On(control, eventName, new EventHandler<TEvent>(eventHandler));
-    //}
-
 
     /// <summary>
     /// subscribe event.

@@ -4,6 +4,8 @@ using static System.Net.Mime.MediaTypeNames;
 using Avalonia.SharpUI;
 using Avalonia.Layout;
 using System.ComponentModel;
+using System.Reactive.Linq;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace ExamplesCounterApp
 {
@@ -14,21 +16,15 @@ namespace ExamplesCounterApp
         /// <summary>
         /// TODO: ??? i need react like useState context？
         /// </summary>
-        public class State : INotifyPropertyChanged
+        public class State : ObservableObject
         {
-            private int v;
+            private int value;
 
             public int Value
             {
-                get => v;
-                set
-                {
-                    v = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
-                }
+                get => value;
+                set => SetProperty(ref this.value, value);
             }
-
-            public event PropertyChangedEventHandler? PropertyChanged;
         }
         public MainView()
         {
@@ -82,6 +78,7 @@ namespace ExamplesCounterApp
                                 state.Value = i;
                             }
                         })
+                        //.Observe()
                         .SetBind(TextBox.TextProperty, state, nameof(State.Value))
                         ,
                         new TextBlock()
