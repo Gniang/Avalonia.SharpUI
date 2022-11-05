@@ -73,15 +73,31 @@ public static class ControlExtensions
     /// </example>
     /// </para>
     /// </summary>
-    public static T On<T, TEvent>(this T control, string eventName, Action<object?, TEvent> eventHandler)
-    where T : IControl
-    where TEvent : EventArgs
-    {
-        return On(control, eventName, new EventHandler<TEvent>(eventHandler));
-    }
+    //public static T On<T, TEvent>(this T control, string eventName, Action<object?, TEvent> eventHandler)
+    //where T : IControl
+    //where TEvent : EventArgs
+    //{
+    //    return On(control, eventName, new EventHandler<TEvent>(eventHandler));
+    //}
 
 
-    /// <inheritdoc cref="ControlExtensions.On"/>
+    /// <summary>
+    /// subscribe event.
+    /// <para>
+    /// <example>
+    /// eg.
+    /// <code language="C#">
+    /// <para>
+    ///   Button.Click += (s, e) => { Debug.WriteLine("Clicked"); };
+    /// </para>
+    ///      ↓
+    /// <para>
+    ///   Button.On(nameof(Button.Click), (object? s, RoutedEventArgs e) => { Debug.WriteLine("Clicked"); } );
+    /// </para>
+    /// </code>
+    /// </example>
+    /// </para>
+    /// </summary>
     public static T On<T, TEvent>(this T control, string eventName, EventHandler<TEvent> eventHandler)
     where T : IControl
     where TEvent : EventArgs
