@@ -1,0 +1,20 @@
+{
+    "files.associations": {
+        "**/*.axaml": "xml",
+    },
+    "[xml]": {
+        "editor.defaultFormatter": "redhat.vscode-xml"
+    },
+    "editor.formatOnSave": true,
+    "xml.format.preserveAttributeLineBreaks": true,
+    "csharp.inlayHints.parameters.enabled": true,
+    "csharp.inlayHints.types.enabled": true,
+    "csharp.inlayHints.types.forImplicitVariableTypes": true,
+    "csharp.inlayHints.parameters.forLiteralParameters": true,
+    "csharp.inlayHints.parameters.forObjectCreationParameters": true,
+    "csharp.inlayHints.parameters.forIndexerParameters": false,
+    "csharp.inlayHints.parameters.forOtherParameters": true,
+    // "csharp.inlayHints.parameters.suppressForParametersThatDifferOnlyBySuffix": false,
+    // "csharp.inlayHints.parameters.suppressForParametersThatMatchMethodIntent": false,
+    // "csharp.inlayHints.parameters.suppressForParametersThatMatchArgumentName": false,
+}
