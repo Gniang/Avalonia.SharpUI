@@ -4,7 +4,18 @@
     <Nullable>enable</Nullable>
     <LangVersion>10.0</LangVersion>
     <Version>$(FuncUIVersion)</Version>
+    <PackageProjectUrl>https://github.com/Gniang/Avalonia.SharpUI</PackageProjectUrl>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Gniang/Avalonia.SharpUI</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageId>$(Authors).$(AssemblyName)</PackageId>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\Readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaVersion)" />
