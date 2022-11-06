@@ -71,7 +71,7 @@ namespace ExamplesCounterApp
                                 new LineBreak(),
                                 new Italic().Inlines(new Run("Although, ") ),
                                 new Run("I always wanted to be "),
-                                new Underline().Inlines(new Run("underlined") ),
+                                new Underline(){ Background = blueBrush }.Inlines(new Run("underlined") ),
                             }),
                     })
                     ,
