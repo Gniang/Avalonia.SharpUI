@@ -14,9 +14,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目", "ソリューション項目", "{26E3BC57-04C3-45FE-B024-4DFF86F12D33}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+		Readme.ja.md = Readme.ja.md
+		Readme.md = Readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplesInlineText", "Example\ExamplesInlineText\ExamplesInlineText.csproj", "{AADDF285-8305-4BC8-957E-C9D8019D4BB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplesInlineText", "Example\ExamplesInlineText\ExamplesInlineText.csproj", "{AADDF285-8305-4BC8-957E-C9D8019D4BB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
