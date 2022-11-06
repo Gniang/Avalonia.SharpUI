@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Interactivity;
 
 namespace Avalonia.SharpUI;
@@ -27,20 +28,10 @@ public static class ControlExtensions
     /// </code></para>
     /// </summary>
     /// <param name="control">View control.</param>
-    /// <param name="prorperty">Binding property.</param>
-    /// <param name="bindingViewModel">Binding view model.</param>
-    /// <param name="bindingPath">binding path in view model.</param>
-    /// <param name="mode">binding mode.</param>
+    /// <param name="prorperty">binding property.</param>
+    /// <param name="bindingItem">binding item.</param>
     /// <returns></returns>
-    public static TControl SetBind<TControl, TViewModel>(this TControl control, AvaloniaProperty prorperty, TViewModel bindingViewModel, string bindingPath, BindingMode mode = BindingMode.Default)
-    where TControl : IAvaloniaObject
-    {
-        control.Bind(prorperty, new Binding(bindingPath, mode) { Source = bindingViewModel });
-        return control;
-    }
-
-    /// <inheritdoc cref="ControlExtensions.SetBind"/>
-    public static TControl SetBind<TControl, TViewModel>(this TControl control, AvaloniaProperty prorperty, IBinding bindingItem)
+    public static TControl SetBind<TControl>(this TControl control, AvaloniaProperty prorperty, IBinding bindingItem)
     where TControl : IAvaloniaObject
     {
         control.Bind(prorperty, bindingItem);
@@ -48,11 +39,29 @@ public static class ControlExtensions
     }
 
     /// <inheritdoc cref="ControlExtensions.SetBind"/>
-    public static TControl SetBind<TControl, T>(this TControl control, AvaloniaProperty prorperty, IObservableState<T> bindingItem, BindingMode mode = BindingMode.Default)
+    /// <param name="bindingViewModel">Binding view model.</param>
+    /// <param name="bindingPath">binding path in view model.</param>
+    /// <param name="mode">binding mode.</param>
+    public static TControl SetBind<TControl, TViewModel>(this TControl control,
+                                                     AvaloniaProperty prorperty,
+                                                     TViewModel bindingViewModel,
+                                                     string bindingPath,
+                                                     BindingMode mode = BindingMode.Default,
+                                                     IValueConverter? converter = null)
     where TControl : IAvaloniaObject
     {
-        control.Bind(prorperty, new Binding(nameof(IObservableState<T>.Value), mode) { Source = bindingItem });
-        return control;
+        return SetBind(control, prorperty, new Binding(bindingPath, mode) { Source = bindingViewModel, Converter = converter });
+    }
+
+    /// <inheritdoc cref="ControlExtensions.SetBind"/>
+    public static TControl SetBind<TControl, T>(this TControl control,
+                                                AvaloniaProperty prorperty,
+                                                IObservableState<T> bindingItem,
+                                                BindingMode mode = BindingMode.Default,
+                                                IValueConverter? converter = null)
+    where TControl : IAvaloniaObject
+    {
+        return SetBind(control, prorperty, new Binding(nameof(IObservableState<T>.Value), mode) { Source = bindingItem, Converter = converter });
     }
 
     public static T OnClick<T>(this T button, Action<object?, RoutedEventArgs> action)
