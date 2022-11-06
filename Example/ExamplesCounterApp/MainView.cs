@@ -1,13 +1,7 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Media;
-using static System.Net.Mime.MediaTypeNames;
 using static Avalonia.SharpUI.ObservableState;
 using Avalonia.SharpUI;
 using Avalonia.Layout;
-using System.ComponentModel;
-using System.Reactive.Linq;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using System;
 
 namespace ExamplesCounterApp
 {

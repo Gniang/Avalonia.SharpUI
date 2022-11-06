@@ -26,4 +26,20 @@ public static class RichTextBlockExtensions
         span.Inlines.AddRange(inlines);
         return span;
     }
+
+    public static TSpan Text<TSpan>(this TSpan span, string text)
+    where TSpan : Span
+    {
+        span.Inlines.Add(new Run(text));
+        return span;
+    }
+}
+public static class RunExtensions
+{
+    public static TRun Text<TRun>(this TRun run, string text)
+    where TRun : Run
+    {
+        run.Text = text;
+        return run;
+    }
 }

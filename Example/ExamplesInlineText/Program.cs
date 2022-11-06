@@ -1,15 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Markup.Xaml.Styling;
-using Avalonia.OpenGL;
 using Avalonia.Themes.Fluent;
-using DynamicData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ExamplesCounterApp
@@ -22,6 +18,7 @@ namespace ExamplesCounterApp
             AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .LogToTrace()
+                .UseSkia()
                 .StartWithClassicDesktopLifetime(args);
         }
 
@@ -29,7 +26,7 @@ namespace ExamplesCounterApp
         {
             public override void OnFrameworkInitializationCompleted()
             {
-                this.Styles.Add(new FluentTheme(new Uri("avares://ControlCatalog/Styles")) { Mode = FluentThemeMode.Light });
+                this.Styles.Add(new FluentTheme(baseUri: null!) { Mode = FluentThemeMode.Dark });
                 Window window = new Window
                 {
                     Title = "Examples InlineText",

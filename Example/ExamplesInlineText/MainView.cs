@@ -1,16 +1,9 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
-using static System.Net.Mime.MediaTypeNames;
 using static Avalonia.SharpUI.ObservableState;
 using Avalonia.SharpUI;
 using Avalonia.Layout;
-using System.ComponentModel;
-using System.Reactive.Linq;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using System;
 using Avalonia.Controls.Documents;
-using Avalonia.Data.Converters;
-using System.Globalization;
 using Avalonia.Media.Immutable;
 
 namespace ExamplesCounterApp
@@ -21,6 +14,7 @@ namespace ExamplesCounterApp
         private IBrush blueBrush = new ImmutableSolidColorBrush(Color.FromUInt32(0x0ff47B2A6u));
         public MainView()
         {
+            this.FontFamily = "Calibri";
             ObservableState<int> colorMode = UseState(0);
             this.Content = new StackPanel
             {
@@ -67,11 +61,13 @@ namespace ExamplesCounterApp
                         new Span()
                             .Inlines(new Inline[]
                             {
-                                new Bold().Inlines(new Run("Oh, so bold!") ),
+                                new Bold().Text("Oh, so bold!"),
                                 new LineBreak(),
-                                new Italic().Inlines(new Run("Although, ") ),
+                                new Italic().Text("Although, "),
                                 new Run("I always wanted to be "),
-                                new Underline(){ Background = blueBrush }.Inlines(new Run("underlined") ),
+                                new Underline(){ Background = blueBrush }.Text("underlined"),
+                                new LineBreak(),
+                                new Bold().Inlines(new Run("text "), new Italic().Text("additional.")),
                             }),
                     })
                     ,
