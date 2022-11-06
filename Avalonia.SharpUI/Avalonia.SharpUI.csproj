@@ -10,6 +10,14 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageId>$(Authors).$(AssemblyName)</PackageId>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>6</WarningLevel>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningLevel>6</WarningLevel>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="..\Readme.md">
       <Pack>True</Pack>
