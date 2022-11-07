@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplesInlineText", "Examp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplesDrawingApp", "Example\ExamplesDrawingApp\ExamplesDrawingApp.csproj", "{1E2A5872-FA5A-448D-98DE-CFA8CE84AECD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplesContactBook", "Example\ExamplesContactBook\ExamplesContactBook.csproj", "{FD8658C5-6198-4D35-BF67-54F5E96FED31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{1E2A5872-FA5A-448D-98DE-CFA8CE84AECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E2A5872-FA5A-448D-98DE-CFA8CE84AECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E2A5872-FA5A-448D-98DE-CFA8CE84AECD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD8658C5-6198-4D35-BF67-54F5E96FED31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD8658C5-6198-4D35-BF67-54F5E96FED31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD8658C5-6198-4D35-BF67-54F5E96FED31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD8658C5-6198-4D35-BF67-54F5E96FED31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{F1086CA0-045C-4960-870E-FD5ACFD74E5E} = {707895FF-9441-4EDF-9856-D88082E7777E}
 		{AADDF285-8305-4BC8-957E-C9D8019D4BB5} = {707895FF-9441-4EDF-9856-D88082E7777E}
 		{1E2A5872-FA5A-448D-98DE-CFA8CE84AECD} = {707895FF-9441-4EDF-9856-D88082E7777E}
+		{FD8658C5-6198-4D35-BF67-54F5E96FED31} = {707895FF-9441-4EDF-9856-D88082E7777E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0E512BA-5704-447D-A1C3-E9485DFD5BF8}

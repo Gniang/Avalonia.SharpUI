@@ -11,6 +11,11 @@ UI building from C# code.(WIP)
   * support Elmish
   * support View Component
 
+
+known problems:
+
+probably leaked event handler. i'm looking into how to handle disposable objects without ReactiveUI.
+
 inspired by
 
 * [fsprojects/Avalonia.FuncUI](https://github.com/fsprojects/Avalonia.FuncUI) 

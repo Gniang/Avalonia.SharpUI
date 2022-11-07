@@ -11,15 +11,38 @@ public interface IObservableState<T>
     T Value { get; set; }
 }
 
-public static class ObservableState
+public interface IObservableState
 {
+    event PropertyChangedEventHandler? PropertyChanged;
+}
+
+public class ObservableState: IObservableState
+{
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        PropertyChanged?.Invoke(this, e);
+    }
+
     public static ObservableState<T> UseState<T>(T v)
     {
         return new ObservableState<T>(v);
     }
+
+    public static void UseEffect(Action effectAction, params IObservableState[] triggerStates)
+    {
+        foreach (var s in triggerStates)
+        {
+            s.PropertyChanged += (s, e) =>
+            {
+                effectAction();
+            };
+        }
+    }
 }
 
-public class ObservableState<T> : INotifyPropertyChanged, IObservableState<T>
+public class ObservableState<T> : ObservableState, INotifyPropertyChanged, IObservableState<T>
 {
     private T value;
 
@@ -34,9 +57,8 @@ public class ObservableState<T> : INotifyPropertyChanged, IObservableState<T>
         set
         {
             this.value = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Value)));
         }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
 }
