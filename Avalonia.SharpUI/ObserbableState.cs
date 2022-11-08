@@ -1,19 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reactive.Linq;
-using System.Text;
+using System.Timers;
 
 namespace Avalonia.SharpUI;
 
-public interface IObservableState<T>
+public interface IObservableState<T> : IObservableState
 {
     T Value { get; set; }
 }
 
-public interface IObservableState
+public interface IObservableState : INotifyPropertyChanged
 {
-    event PropertyChangedEventHandler? PropertyChanged;
 }
 
 public class ObservableState : IObservableState
@@ -29,6 +26,12 @@ public class ObservableState : IObservableState
     {
         return new ObservableState<T>(v);
     }
+
+    public static IObservableState<T> UseDeferred<T>(IObservableState<T> state, int deferredMilis)
+    {
+        return new DeferredState<T>(state, deferredMilis);
+    }
+
 
     public static void UseEffect(Action effectAction, params IObservableState[] triggerStates)
     {
@@ -60,5 +63,44 @@ public class ObservableState<T> : ObservableState, INotifyPropertyChanged, IObse
             OnPropertyChanged(new PropertyChangedEventArgs(nameof(Value)));
         }
     }
+}
 
+
+public class DeferredState<T> : IObservableState<T>, IDisposable
+{
+    private readonly System.Timers.Timer timer = new();
+    private readonly ElapsedEventHandler? handler;
+    private T latestValue;
+
+    public DeferredState(IObservableState<T> innerState, int deferredMillis)
+    {
+        this.latestValue = innerState.Value;
+        timer.Interval = deferredMillis;
+        timer.Elapsed += handler = (s, e) =>
+        {
+            timer.Stop();
+            innerState.Value = latestValue;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+        };
+    }
+
+    public T Value
+    {
+        get => latestValue;
+        set
+        {
+            latestValue = value;
+            timer.Stop();
+            timer.Start();
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public void Dispose()
+    {
+        timer.Elapsed -= handler;
+        timer.Stop();
+        timer.Dispose();
+    }
 }

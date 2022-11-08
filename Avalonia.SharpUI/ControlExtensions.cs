@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
@@ -62,6 +59,26 @@ public static class ControlExtensions
     where TControl : IAvaloniaObject
     {
         return SetBind(control, prorperty, new Binding(nameof(IObservableState<T>.Value), mode) { Source = bindingItem, Converter = converter });
+    }
+
+    public static TAvaloniaObject SetObservable<TAvaloniaObject, T>(this TAvaloniaObject avaloniaObject,
+                                                     AvaloniaProperty<T> prorperty,
+                                                     Action<IObservable<T>> action)
+    where TAvaloniaObject : IAvaloniaObject
+    {
+        // TODO: event leak;
+        action.Invoke(avaloniaObject.GetObservable(prorperty));
+        return avaloniaObject;
+    }
+
+    public static TAvaloniaObject SetSubscribe<TAvaloniaObject, T>(this TAvaloniaObject avaloniaObject,
+                                                 AvaloniaProperty<T> prorperty,
+                                                 Action<T> action)
+    where TAvaloniaObject : IAvaloniaObject
+    {
+        // TODO: event leak;
+        avaloniaObject.GetObservable(prorperty).Subscribe(action);
+        return avaloniaObject;
     }
 
     public static T OnClick<T>(this T button, Action<object?, RoutedEventArgs> action)
