@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive.Linq;
@@ -16,7 +16,7 @@ public interface IObservableState
     event PropertyChangedEventHandler? PropertyChanged;
 }
 
-public class ObservableState: IObservableState
+public class ObservableState : IObservableState
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 

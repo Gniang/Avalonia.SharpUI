@@ -7,7 +7,7 @@ using Avalonia.Controls.Documents;
 using Avalonia.Media.Immutable;
 using System.Linq;
 
-namespace ExamplesCounterApp;
+namespace ExamplesDrawingApp;
 internal class MainView : UserControl
 {
     public MainView()

@@ -11,105 +11,81 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 
-namespace ExamplesCounterApp
+namespace ExamplesContactBook;
+
+
+internal class MainView : UserControl
 {
-    record Contact(Guid Id, string FullName, string Mail, string Phone)
+    public MainView()
     {
-        public static Contact Create(string fullName, string mail, string phone)
-            => new Contact(Guid.NewGuid(), fullName, mail, phone);
-        public static Contact Init()
-            => new Contact(Guid.Empty, "", "", "");
-        public static Contact Random()
+        var selectedId = UseState(null as Guid?);
+        var filter = UseState(null as string);
+        Contact? selectedContactFunc() => ContactStore.shared.Contacts.FirstOrDefault(x => x.Id == selectedId.Value);
+        UseEffect(() =>
         {
-            var faker = new Faker(locale: "de").Person;
-            return new Contact(Guid.NewGuid(), faker.FullName, faker.Email, faker.Phone);
-        }
-    };
-
-    internal class ContactStore
-    {
-        public static readonly ContactStore shared = new ContactStore();
-
-        private readonly List<Contact> value
-                = Enumerable.Range(0, 100)
-                        .Select(_ => Contact.Random())
-                        .ToList();
-        public List<Contact> Contacts => value;
-    }
-
-    internal class MainView : UserControl
-    {
-        public MainView()
-        {
-            var selectedId = UseState(null as Guid?);
-            var filter = UseState(null as string);
-            Contact? selectedContactFunc() => ContactStore.shared.Contacts.FirstOrDefault(x => x.Id == selectedId.Value);
-            UseEffect(() =>
+            if (Application.Current?.ApplicationLifetime is
+                IClassicDesktopStyleApplicationLifetime lifetime)
             {
-                if (Application.Current?.ApplicationLifetime is
-                    IClassicDesktopStyleApplicationLifetime lifetime)
+                Contact? selectedContact = selectedContactFunc();
+                if (selectedContact is Contact c)
                 {
-                    Contact? selectedContact = selectedContactFunc();
-                    if (selectedContact is Contact c)
-                    {
-                        lifetime.MainWindow.Title = $"ContactBook - {c.FullName}";
-                    }
-                    else
-                    {
-                        lifetime.MainWindow.Title = "ContactBook";
-                    };
+                    lifetime.MainWindow.Title = $"ContactBook - {c.FullName}";
                 }
+                else
+                {
+                    lifetime.MainWindow.Title = "ContactBook";
+                };
             }
-            ,
-  selectedId);
+        }
+        ,
+selectedId);
 
 
-            Task.Run(async () =>
+        Task.Run(async () =>
+        {
+            await Task.Delay(2000);
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                await Task.Delay(2000);
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    selectedId.Value = ContactStore.shared.Contacts[5].Id;
-                });
+                selectedId.Value = ContactStore.shared.Contacts[5].Id;
             });
+        });
 
-            this.Content = new DockPanel()
-                .DockTop()
-                .Children(new Control[]
+        this.Content = new DockPanel()
+            .DockTop()
+            .Children(new Control[]
+            {
+                new ContactListView(null, selectedId, filter),
+                new ContactDetailsView(null),
+                new TextBlock()
                 {
-                    new ContactListView(null, selectedId, filter),
-                    new ContactDetailsView(null),
-                    new TextBlock()
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Stretch
-                    }
-                    .DockTop()
-                    .SetBind(TextBox.TextProperty, selectedId, converter:ValueConverterSimple.OneWay(
-                        (_)=> $"{selectedId.Value} testmsg{null}")
-                    )
-                    ,
+                    HorizontalAlignment = HorizontalAlignment.Stretch
                 }
-            );
-        }
-
-
+                .DockTop()
+                .SetBind(TextBox.TextProperty, selectedId, converter:ValueConverterSimple.OneWay(
+                    (_)=> $"{selectedId.Value} testmsg{null}")
+                )
+                ,
+            }
+        );
     }
 
-    internal class ContactDetailsView : UserControl
+
+}
+
+internal class ContactDetailsView : UserControl
+{
+    private object value;
+
+    public ContactDetailsView(object value)
     {
-        private object value;
-
-        public ContactDetailsView(object value)
-        {
-            this.value = value;
-        }
+        this.value = value;
     }
+}
 
-    internal class ContactListView : UserControl
+internal class ContactListView : UserControl
+{
+    public ContactListView(object value, ObservableState<Guid?> selectedId, ObservableState<string?> filter)
     {
-        public ContactListView(object value, ObservableState<Guid?> selectedId, ObservableState<string?> filter)
-        {
-        }
-
     }
+
 }
