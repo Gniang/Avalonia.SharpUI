@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Themes.Fluent;
@@ -21,12 +21,12 @@ class Program
     {
         public override void OnFrameworkInitializationCompleted()
         {
-            this.Styles.Add(new FluentTheme(new Uri("avares://ControlCatalog/Styles")) { Mode = FluentThemeMode.Light });
+            this.Styles.Add(new FluentTheme(baseUri: null!) { Mode = FluentThemeMode.Dark });
             Window window = new Window
             {
                 Title = "Examples ContactBook",
-                Height = 400.0,
-                Width = 400.0,
+                Height = 800.0,
+                Width = 1200.0,
                 Content = new MainView(),
             };
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

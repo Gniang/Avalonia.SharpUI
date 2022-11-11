@@ -1,3 +1,5 @@
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using System;
 using System.ComponentModel;
 using System.Timers;
@@ -7,6 +9,7 @@ namespace Avalonia.SharpUI;
 public interface IObservableState<T> : IObservableState
 {
     T Value { get; set; }
+    IBinding ToBinding(BindingMode mode = BindingMode.Default, IValueConverter? converter = null);
 }
 
 public interface IObservableState : INotifyPropertyChanged
@@ -63,6 +66,11 @@ public class ObservableState<T> : ObservableState, INotifyPropertyChanged, IObse
             OnPropertyChanged(new PropertyChangedEventArgs(nameof(Value)));
         }
     }
+
+    public IBinding ToBinding(BindingMode mode = BindingMode.Default, IValueConverter? converter = null)
+    {
+        return new Binding(nameof(Value)) { Source = this, Converter = converter, Mode = mode };
+    }
 }
 
 
@@ -70,10 +78,12 @@ public class DeferredState<T> : IObservableState<T>, IDisposable
 {
     private readonly System.Timers.Timer timer = new();
     private readonly ElapsedEventHandler? handler;
+    private readonly IObservableState<T> innerState;
     private T latestValue;
 
     public DeferredState(IObservableState<T> innerState, int deferredMillis)
     {
+        this.innerState = innerState;
         this.latestValue = innerState.Value;
         timer.Interval = deferredMillis;
         timer.Elapsed += handler = (s, e) =>
@@ -102,5 +112,10 @@ public class DeferredState<T> : IObservableState<T>, IDisposable
         timer.Elapsed -= handler;
         timer.Stop();
         timer.Dispose();
+    }
+
+    public IBinding ToBinding(BindingMode mode = BindingMode.Default, IValueConverter? converter = null)
+    {
+        return innerState.ToBinding(mode, converter);
     }
 }
