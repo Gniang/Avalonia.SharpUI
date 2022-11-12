@@ -17,6 +17,11 @@ public class ValueConverterSimple : IValueConverter
         this.convBack = convBack;
     }
 
+    public static MultiValueConverterSimple Multi(Func<IEnumerable<object?>, object?> conv)
+    {
+        return new MultiValueConverterSimple(conv);
+    }
+
     /// <summary>
     /// create simple one way converter.
     /// </summary>
@@ -52,5 +57,20 @@ public class ValueConverterSimple : IValueConverter
             throw new NotImplementedException();
         }
         return convBack.Invoke(value);
+    }
+}
+
+public class MultiValueConverterSimple : IMultiValueConverter
+{
+    private readonly Func<IEnumerable<object?>, object?> conv;
+
+    public MultiValueConverterSimple(Func<IEnumerable<object?>, object?> conv)
+    {
+        this.conv = conv;
+    }
+
+    public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
+    {
+        return conv.Invoke(values);
     }
 }

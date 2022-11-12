@@ -23,6 +23,7 @@ using System.Net.Http;
 using System.IO;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data.Converters;
 
 namespace ExamplesContactBook;
 
@@ -123,6 +124,16 @@ internal class ContactDetailsView : UserControl
     {
         var isEditing = UseState(false);
 
+        IBinding BindMulti(IEnumerable<IObservableState> states, BindingMode mode, IMultiValueConverter converter)
+        {
+            return new MultiBinding()
+            {
+                Bindings = states.Select(x => new Binding("Value") { Source = x }).ToArray(),
+                Mode = mode,
+                Converter = converter,
+            };
+        }
+
         this.Content = new DockPanel()
         {
             LastChildFill = true,
@@ -138,21 +149,21 @@ internal class ContactDetailsView : UserControl
             new TransitioningContentControl()
             {
                 PageTransition = new CrossFade(TimeSpan.FromMilliseconds(300)),
-            }
-            .SetBind(ContentProperty, contact, converter: ValueConverterSimple.OneWay(
-                x =>
-                {
-                    return contact switch{
-                        _ when contact.Value != null && isEditing.Value => new ContactDetailsEditView(contact, isEditing),
-                        _ when contact.Value != null => new ContactDetailsReadOnlyView(contact, isEditing),
-                        _ => new TextBlock()
-                                {
-                                    Text = "-",
-                                }
-                                .DockTop(),
-                    };
-                })
-            )
+                [!ContentProperty] = BindMulti(new IObservableState [] {contact, isEditing } ,BindingMode.OneWay , converter: ValueConverterSimple.Multi(
+                    x =>
+                    {
+                        return contact switch{
+                            _ when contact.Value != null && isEditing.Value => new ContactDetailsEditView(contact, isEditing),
+                            _ when contact.Value != null => new ContactDetailsReadOnlyView(contact, isEditing),
+                            _ => new TextBlock()
+                                    {
+                                        Text = "-",
+                                    }
+                                    .DockTop(),
+                        };
+                    })
+                 )
+            },
             //.SetBind(ContentProperty, isEditing, converter: ValueConverterSimple.OneWay(
             //    x =>
             //    {
@@ -186,6 +197,9 @@ internal class ContactDetailsEditView : UserControl
 
     public ContactDetailsEditView(ObservableState<Contact> contact, ObservableState<bool> isEditing)
     {
+
+        var editingContact = UseState(contact.Value);
+
         void finishEdited(EditContactResult result)
         {
             if (!result.IsCancel)
@@ -203,7 +217,7 @@ internal class ContactDetailsEditView : UserControl
         .DockTop()
         .Children(new Control[]
         {
-            new ContactEditor(contact),
+            new ContactEditor(editingContact),
 
             new StackPanel()
             {
@@ -219,7 +233,7 @@ internal class ContactDetailsEditView : UserControl
                 }
                 .DockTop()
                 .OnClick((s,e) =>
-                    finishEdited(EditContactResult.Update(contact.Value)))
+                    finishEdited(EditContactResult.Update(editingContact.Value)))
                 ,
                 new Button()
                 {
@@ -235,7 +249,7 @@ internal class ContactDetailsEditView : UserControl
 
 internal class ContactEditor : UserControl
 {
-    public ContactEditor(ObservableState<Contact> contact)
+    public ContactEditor(ObservableState<Contact> editingContact)
     {
         this.Content = new StackPanel()
         {
@@ -248,35 +262,35 @@ internal class ContactEditor : UserControl
             {
                 Watermark = "Full Name",
                 UseFloatingWatermark = true,
-                Text = contact.Value.FullName,
+                Text = editingContact.Value.FullName,
             }
             .DockTop()
-            .SetSubscribe(TextBox.TextProperty,
-                text => contact.Value = contact.Value with { FullName = text ?? "" }
+            .On(nameof(TextBox.TextChanged), (object? s, TextChangedEventArgs e) =>
+                editingContact.Value = editingContact.Value with { FullName = (s as TextBox)?.Text ?? "" }
             ),
 
             new TextBox()
             {
                 Watermark = "Mail",
                 UseFloatingWatermark = true,
-                Text = contact.Value.Mail,
+                Text = editingContact.Value.Mail,
             }
             .DockTop()
             .SetSubscribe(TextBox.TextProperty,
-                text => contact.Value = contact.Value with { Mail = text ?? "" }
-            ),
-
+                text => editingContact.Value = editingContact.Value with { Mail = text ?? "" }
+            )
+            ,
             new TextBox()
             {
                 Watermark = "Phone",
                 UseFloatingWatermark = true,
-                Text = contact.Value.Mail,
+                Text = editingContact.Value.Mail,
             }
             .DockTop()
             .SetSubscribe(TextBox.TextProperty,
-                text => contact.Value = contact.Value with { Phone = text ?? "" }
-            ),
-
+                text => editingContact.Value = editingContact.Value with { Phone = text ?? "" }
+            )
+            ,
         });
     }
 }
