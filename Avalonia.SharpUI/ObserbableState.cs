@@ -1,14 +1,27 @@
 using Avalonia.Data;
 using Avalonia.Data.Converters;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Timers;
 
 namespace Avalonia.SharpUI;
 
-public interface IObservableState<T> : IObservableState
+
+public interface IReadOnlyState<T>
 {
-    T Value { get; set; }
+    T Value { get; }
+}
+public interface IWritableState<T>
+{
+    T Value { set; }
+}
+public interface IObservableState<T> : IObservableState, IReadOnlyState<T>, IWritableState<T>
+{
+    new T Value { get; set; }
     IBinding ToBinding(BindingMode mode = BindingMode.Default, IValueConverter? converter = null);
 }
 
@@ -46,7 +59,28 @@ public class ObservableState : IObservableState
             };
         }
     }
+
+
+    public static IBinding ToMultiBinding(IEnumerable<object> states, BindingMode mode, IMultiValueConverter converter)
+    {
+        return new MultiBinding()
+        {
+            Bindings = states.Select(x =>
+            {
+                return x switch
+                {
+                    IBinding b => b,
+                    IObservableState s when s.GetType().IsGenericType => new Binding(nameof(IObservableState<object>.Value)) { Source = s },
+                    _ => new Binding() { Source = x },
+                };
+            })
+            .ToArray(),
+            Mode = mode,
+            Converter = converter,
+        };
+    }
 }
+
 
 public class ObservableState<T> : ObservableState, INotifyPropertyChanged, IObservableState<T>
 {
@@ -57,7 +91,7 @@ public class ObservableState<T> : ObservableState, INotifyPropertyChanged, IObse
         this.value = value;
     }
 
-    public T Value
+    public virtual T Value
     {
         get => value;
         set
@@ -66,12 +100,12 @@ public class ObservableState<T> : ObservableState, INotifyPropertyChanged, IObse
             OnPropertyChanged(new PropertyChangedEventArgs(nameof(Value)));
         }
     }
-
-    public IBinding ToBinding(BindingMode mode = BindingMode.Default, IValueConverter? converter = null)
+    public virtual IBinding ToBinding(BindingMode mode = BindingMode.Default, IValueConverter? converter = null)
     {
         return new Binding(nameof(Value)) { Source = this, Converter = converter, Mode = mode };
     }
 }
+
 
 
 public class DeferredState<T> : IObservableState<T>, IDisposable

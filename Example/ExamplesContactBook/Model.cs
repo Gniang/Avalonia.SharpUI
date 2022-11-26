@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using static Avalonia.SharpUI.ObservableState;
 using Avalonia.SharpUI;
 using Avalonia.Layout;
@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using System.IO;
+using System.Net.Http;
+using Avalonia.Media.Imaging;
 
 namespace ExamplesContactBook;
 
@@ -35,4 +38,20 @@ internal class ContactStore
                     .Select(_ => Contact.Random())
                     .ToList();
     public List<Contact> Contacts => value;
+}
+
+
+
+
+public class Api
+{
+    private static readonly string randomImageUri = "https://thispersondoesnotexist.com/image";
+    private static readonly HttpClient httpClient = new HttpClient();
+
+    public static async Task<Bitmap> RandomImage()
+    {
+        var bytes = await httpClient.GetByteArrayAsync(randomImageUri);
+        using var s = new MemoryStream(bytes);
+        return new Bitmap(s);
+    }
 }

@@ -10,18 +10,11 @@ using System.Threading.Tasks;
 using Avalonia.Threading;
 using Avalonia.Animation;
 using System.Diagnostics.CodeAnalysis;
-using Avalonia.Controls.Documents;
 using System.Collections.Generic;
 using Avalonia.Controls.Templates;
-using System.Collections.ObjectModel;
 using System.Reactive.Linq;
-using System.Reactive;
 using Avalonia.Data;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
-using System.Net.Http;
-using System.IO;
-using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data.Converters;
 
@@ -36,6 +29,19 @@ internal class MainView : UserControl
         var selectedId = UseState(null as Guid?);
         var filter = UseState(null as string);
         var selectedContact = UseState(null as Contact);
+        var editContactResult = UseState(EditContactResult.Cancel);
+
+        IEnumerable<Contact> filtered = contacts
+            .Where(x => filter.Value switch
+                {
+                    string f => x.FullName.Contains(f) ||
+                                  x.Mail.Contains(f) ||
+                                  x.Phone.Contains(f),
+                    _ => true,
+                });
+        var filteredContacts = UseState(filtered);
+
+
         UseEffect(() =>
         {
             if (Application.Current?.ApplicationLifetime is
@@ -43,13 +49,9 @@ internal class MainView : UserControl
                 lifetime.MainWindow is Window window)
             {
                 if (selectedContact.Value is Contact c)
-                {
                     window.Title = $"ContactBook - {c.FullName}";
-                }
                 else
-                {
                     window.Title = "ContactBook";
-                };
             }
         }
         ,
@@ -61,78 +63,52 @@ internal class MainView : UserControl
         },
         selectedId);
 
-        var filteredContacts = UseState(contacts.AsReadOnly());
         UseEffect(() =>
         {
-            filteredContacts.Value = contacts
-                .Where(x => filter.Value switch
-                {
-                    string f => x.FullName.Contains(f) ||
-                                  x.Mail.Contains(f) ||
-                                  x.Phone.Contains(f),
-                    _ => true,
-                })
-                .ToList()
-                .AsReadOnly();
-        },
-        filter);
-
-        Task.Run(async () =>
-        {
-            await Task.Delay(2000);
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            if (editContactResult.Value is EditContactResult r)
             {
-                selectedId.Value = ContactStore.shared.Contacts[5].Id;
-            });
-        });
+                if (r.IsDelete)
+                {
+                    contacts.RemoveAll(x => x.Id == r.Contact.Id);
+                    filteredContacts.Value = filtered;
+                    selectedContact.Value = null;
+                }
+                else if (r.IsUpdate)
+                {
+                    var idx = contacts.FindIndex(x => x.Id == r.Contact.Id);
+                    contacts[idx] = r.Contact;
+                    filteredContacts.Value = filtered;
+                    selectedContact.Value = r.Contact;
+                }
+            }
+        }, editContactResult);
 
         this.Content = new DockPanel()
             .DockTop()
             .Children(new Control[]
             {
-                new ContactListView(filteredContacts, selectedId, filter),
-                new ContactDetailsView(selectedContact),
-                new TextBlock()
-                {
-                    HorizontalAlignment = HorizontalAlignment.Stretch
-                }
-                .DockTop()
-                .SetBind(TextBox.TextProperty, selectedId, converter:ValueConverterSimple.OneWay(
-                    (_)=> $"{selectedId.Value} testmsg{null}")
-                )
+                new ContactListView(filteredContacts, selectedId,selectedContact, filter),
+                new ContactDetailsView(selectedContact, editContactResult)
                 ,
                 new TextBlock()
                 {
-                    HorizontalAlignment = HorizontalAlignment.Stretch
+                    [!TextBox.TextProperty] = selectedId.ToBinding(converter:ValueConverterSimple.OneWay(
+                        (_)=> $"{selectedId.Value} {selectedContact.Value}")
+                    )
                 }
-                .DockTop()
-                .SetBind(TextBox.TextProperty, filter, converter:ValueConverterSimple.OneWay(
-                    (_)=> $"filterValues:{filter.Value}")
-                )
+                .DockBottom()
                 ,
             }
         );
     }
-
-
 }
 
 internal class ContactDetailsView : UserControl
 {
 
-    public ContactDetailsView(ObservableState<Contact?> contact)
+    public ContactDetailsView(ObservableState<Contact?> contact, ObservableState<EditContactResult> contactResult)
     {
         var isEditing = UseState(false);
-
-        IBinding BindMulti(IEnumerable<IObservableState> states, BindingMode mode, IMultiValueConverter converter)
-        {
-            return new MultiBinding()
-            {
-                Bindings = states.Select(x => new Binding("Value") { Source = x }).ToArray(),
-                Mode = mode,
-                Converter = converter,
-            };
-        }
 
         this.Content = new DockPanel()
         {
@@ -149,12 +125,12 @@ internal class ContactDetailsView : UserControl
             new TransitioningContentControl()
             {
                 PageTransition = new CrossFade(TimeSpan.FromMilliseconds(300)),
-                [!ContentProperty] = BindMulti(new IObservableState [] {contact, isEditing } ,BindingMode.OneWay , converter: ValueConverterSimple.Multi(
+                [!ContentProperty] = ToMultiBinding(new IObservableState [] {contact, isEditing } ,BindingMode.OneWay , converter: ValueConverterSimple.Multi(
                     x =>
                     {
-                        return contact switch{
-                            _ when contact.Value != null && isEditing.Value => new ContactDetailsEditView(contact, isEditing),
-                            _ when contact.Value != null => new ContactDetailsReadOnlyView(contact, isEditing),
+                        return contact.Value switch{
+                            _ when contact.Value != null && isEditing.Value => new ContactDetailsEditView(contact, isEditing, contactResult),
+                            _ when contact.Value != null => new ContactDetailsReadOnlyView(contact, isEditing, contactResult),
                             _ => new TextBlock()
                                     {
                                         Text = "-",
@@ -164,48 +140,41 @@ internal class ContactDetailsView : UserControl
                     })
                  )
             },
-            //.SetBind(ContentProperty, isEditing, converter: ValueConverterSimple.OneWay(
-            //    x =>
-            //    {
-            //        return contact switch{
-            //            _ when contact.Value != null && isEditing.Value => new ContactDetailsEditView(contact, isEditing),
-            //            _ when contact.Value != null => new ContactDetailsReadOnlyView(contact, isEditing),
-            //            _ => new TextBlock()
-            //                    {
-            //                        Text = "-",
-            //                    }
-            //                    .DockTop(),
-            //        };
-            //    })
-            //)
-            //,
         });
     }
 }
 
-record EditContactResult(Contact? Contact)
-{
-    [MemberNotNullWhen(false, nameof(Contact))]
-    public bool IsCancel => Contact == null;
 
-    public static EditContactResult Update(Contact contact) => new(contact);
-    public static EditContactResult Cancel => new(null as Contact);
+enum EditContactState
+{
+    Cancel,
+    Delete,
+    Update,
+}
+
+record EditContactResult(EditContactState State, Contact? Contact)
+{
+    [MemberNotNullWhen(true, nameof(Contact))]
+    public bool IsUpdate => State == EditContactState.Update;
+
+    [MemberNotNullWhen(true, nameof(Contact))]
+    public bool IsDelete => State == EditContactState.Delete;
+
+    public static EditContactResult Update(Contact contact) => new(EditContactState.Update, contact);
+    public static EditContactResult Delete(Contact contact) => new(EditContactState.Delete, contact);
+    public static EditContactResult Cancel => new(EditContactState.Cancel, null as Contact);
 }
 
 internal class ContactDetailsEditView : UserControl
 {
-
-    public ContactDetailsEditView(ObservableState<Contact> contact, ObservableState<bool> isEditing)
+    public ContactDetailsEditView(ObservableState<Contact> contact, ObservableState<bool> isEditing, ObservableState<EditContactResult> contactResult)
     {
 
         var editingContact = UseState(contact.Value);
 
         void finishEdited(EditContactResult result)
         {
-            if (!result.IsCancel)
-            {
-                contact.Value = result.Contact;
-            }
+            contactResult.Value = result;
             isEditing.Value = false;
         };
         this.Content = new StackPanel()
@@ -297,7 +266,7 @@ internal class ContactEditor : UserControl
 
 internal class ContactDetailsReadOnlyView : UserControl
 {
-    public ContactDetailsReadOnlyView(ObservableState<Contact> contact, ObservableState<bool> isEditing)
+    public ContactDetailsReadOnlyView(ObservableState<Contact> contact, ObservableState<bool> isEditing, IObservableState<EditContactResult> contactResult)
     {
         this.Content = new StackPanel()
         {
@@ -331,7 +300,7 @@ internal class ContactDetailsReadOnlyView : UserControl
                     Background = Brush.Parse("#c0392b")
                 }
                 .DockBottom()
-                .OnClick((s,e) => isEditing.Value = false)
+                .OnClick((s,e) => contactResult.Value = EditContactResult.Delete(contact.Value))
             })
         }); ;
     }
@@ -341,12 +310,6 @@ internal class ContactView : UserControl
 {
     public ContactView(ObservableState<Contact> contact)
     {
-        //var image = UseState(null as Bitmap);
-
-        //Api.RandomImage().ContinueWith(async (x) =>
-        //{
-        //    await Dispatcher.UIThread.InvokeAsync(async () => { image.Value = await x; });
-        //});
 
         IObservableState<Deferred<T>> UseAsync<T>(Task<T> t)
         {
@@ -442,8 +405,6 @@ internal class ContactView : UserControl
                         .DockTop(),
                     });
                 });
-                //}),
-                //Template = 
             })
            ),
         };
@@ -474,26 +435,20 @@ public class Deferred
     };
 }
 
-public class Api
-{
-    private static readonly string randomImageUri = "https://thispersondoesnotexist.com/image";
-    private static readonly HttpClient httpClient = new HttpClient();
-
-    public static async Task<Bitmap> RandomImage()
-    {
-        var bytes = await httpClient.GetByteArrayAsync(randomImageUri);
-        using var s = new MemoryStream(bytes);
-        return new Bitmap(s);
-    }
-}
-
 internal class ContactListView : UserControl
 {
-    public ContactListView(IObservableState<ReadOnlyCollection<Contact>> filteredCntacts, ObservableState<Guid?> selectedId, ObservableState<string?> filter)
+    public ContactListView(IObservableState<IEnumerable<Contact>> filteredContacts,
+        ObservableState<Guid?> selectedId,
+        ObservableState<Contact?> selectedContact,
+        ObservableState<string?> filter)
     {
         var filterDeferred = UseDeferred(filter, 1_000);
-
-
+        var fc = UseState(filteredContacts.Value.ToList());
+        UseEffect(() =>
+        {
+            fc.Value = filteredContacts.Value.ToList();
+        }
+        , filter, filteredContacts);
 
         this.Content = new DockPanel()
         {
@@ -510,10 +465,7 @@ internal class ContactListView : UserControl
             .DockTop()
             .SetSubscribe(TextBox.TextProperty, text => {
                 if(text != filter.Value){
-                    if (string.IsNullOrEmpty(text))
-                        filter.Value = null;
-                    else
-                        filter.Value = text;
+                    filter.Value = string.IsNullOrEmpty(text) ? null: text;
                 }
             }),
 
@@ -525,35 +477,26 @@ internal class ContactListView : UserControl
             .DockTop()
             .SetSubscribe(TextBox.TextProperty, text => {
                 if(text != filterDeferred.Value){
-                    if (string.IsNullOrEmpty(text))
-                        filterDeferred.Value = null;
-                    else
-                        filterDeferred.Value = text;
+                    filterDeferred.Value = string.IsNullOrEmpty(text) ? null: text;
                 }
             }),
 
             new ListBox()
             {
-                [!ListBox.ItemsProperty] = filteredCntacts.ToBinding(),
-                [!ListBox.SelectedItemProperty] = selectedId.ToBinding(BindingMode.OneWay,
-                    converter:ValueConverterSimple.OneWay(
-                    _ => filteredCntacts.Value
-                        .FirstOrDefault(x => x.Id == selectedId.Value)
-                    )
-                ),
+                [!ListBox.ItemsProperty] = fc.ToBinding(),
+                [!ListBox.SelectedItemProperty] = selectedContact.ToBinding(),
                 ItemTemplate = new FuncDataTemplate<Contact>((value, namescope) =>
                 {
-                    return new TextBlock(){Text = value.FullName};
+                    return new TextBlock() { Text = value.FullName };
                 })
             }
             .DockTop()
             .SetSubscribe(ListBox.SelectedIndexProperty, idx =>
                 {
-                    selectedId.Value = filteredCntacts.Value
+                    selectedId.Value = fc.Value
                         .ElementAtOrDefault(idx)?.Id;
                 }
             )
         }); ;
     }
-
 }
