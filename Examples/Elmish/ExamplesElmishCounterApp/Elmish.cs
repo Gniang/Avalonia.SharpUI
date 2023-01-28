@@ -139,13 +139,14 @@ public class ViewUpdater<TMsg, TState> : IViewUpdater<TMsg>
         {
             return iv;
         }
-        return SearchVisualSub(child, pathes.Slice(1));
+        return SearchVisualSub(child, pathes[1..]);
     }
 
 
-    public static int IndexOf<T>(IReadOnlyList<T> self, Func<T, bool> predicate)
+    private static int IndexOf<T>(IReadOnlyList<T> self, Func<T, bool> predicate)
     {
-        for (int i = 0; i < self.Count; i++)
+        var c = self.Count;
+        for (int i = 0; i < c; ++i)
         {
             if (predicate(self[i]))
                 return i;
