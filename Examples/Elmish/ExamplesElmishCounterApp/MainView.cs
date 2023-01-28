@@ -77,9 +77,9 @@ internal class MainView : IView<Msg, State>
                 .DockBottom()
                 .On(nameof(NumericUpDown.ValueChanged), (object? s, NumericUpDownValueChangedEventArgs e) =>
                 {
-                    if (s is NumericUpDown n && n.Value is decimal d)
+                    if (s is NumericUpDown n && DecimalToInt(n.Value) is int d)
                     {
-                        v.Invoke(new SetCount((int)d));
+                        v.Invoke(new SetCount(d));
                     }
                 })
                 ,
@@ -94,5 +94,15 @@ internal class MainView : IView<Msg, State>
                 ,
             })
             ;
+    }
+    public static int? DecimalToInt(decimal? val)
+    {
+        if (val is not decimal d) return null;
+
+        if (d > int.MaxValue || d < int.MinValue)
+        {
+            return null;
+        }
+        return decimal.ToInt32(d);
     }
 }

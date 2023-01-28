@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using ExamplesCounterApp;
 using System;
@@ -72,6 +73,19 @@ public class ViewUpdater<TMsg, TState> : IViewUpdater<TMsg>
         var v = view.View(state, this);
         control.Content = v;
 
+        // visual tree is created after to load
+        //var t = Dispatcher.UIThread.InvokeAsync(() =>
+        //{
+        //    if (focused != null && key != null)
+        //    {
+        //        var newFocusing = SearchVisual(this.control, key);
+        //        newFocusing?.Focus();
+        //        if (focused is TextBox prevT && newFocusing is TextBox newT)
+        //        {
+        //            newT.CaretIndex = prevT.CaretIndex;
+        //        }
+        //    }
+        //}, DispatcherPriority.Loaded);
         EventHandler<RoutedEventArgs>? handler = null;
         v.Loaded += handler = (s, e) =>
         {
