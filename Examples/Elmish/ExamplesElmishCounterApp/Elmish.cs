@@ -1,8 +1,13 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using ExamplesCounterApp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.InteropServices;
 using static ExamplesCounterApp.MainView;
 
 namespace Avalonia.SharpUI.Elmish;
@@ -57,16 +62,98 @@ public class ViewUpdater<TMsg, TState> : IViewUpdater<TMsg>
         this.modelUpdater = modelUpdater;
     }
 
+    record ControlPath(int ChildIndex, Type ControlType);
+    record FocusableInputKey(List<ControlPath> ControlPathes);
     internal void SetState(TState state)
     {
         this.state = state;
         var focused = FocusManager.Instance?.Current;
-        control.Content = view.View(state, this);
-        if (focused != null)
+        var key = GetVisualKey(focused);
+        var v = view.View(state, this);
+        control.Content = v;
+
+        EventHandler<RoutedEventArgs>? handler = null;
+        v.Loaded += handler = (s, e) =>
         {
-            var aa = 1;
-        }
+            v.Loaded -= handler;
+            if (focused != null && key != null)
+            {
+                var newFocusing = SearchVisual(this.control, key);
+                newFocusing?.Focus();
+                if (focused is TextBox prevT && newFocusing is TextBox newT)
+                {
+                    newT.CaretIndex = prevT.CaretIndex;
+                }
+            }
+        };
     }
+
+
+    [return: NotNullIfNotNull(nameof(item))]
+    private FocusableInputKey? GetVisualKey(IInputElement? item)
+    {
+        if (item is null)
+        {
+            return null;
+        }
+        VisualTree.IVisual? prev = item;
+        VisualTree.IVisual? parent = item.VisualParent;
+        var keys = new List<ControlPath>(100);
+        while (parent != null)
+        {
+            var i = IndexOf(parent.VisualChildren, x => x == prev);
+            keys.Add(new ControlPath(i, prev.GetType()));
+            if (parent == this.control) break;
+            prev = parent;
+            parent = parent.VisualParent;
+        }
+        keys.Reverse();
+
+        return new FocusableInputKey(keys);
+    }
+
+    private IInputElement? SearchVisual(VisualTree.IVisual visual, FocusableInputKey key)
+    {
+        return SearchVisualSub(visual, CollectionsMarshal.AsSpan(key.ControlPathes));
+    }
+
+    private IInputElement? SearchVisualSub(IVisual visual, Span<ControlPath> pathes)
+    {
+        if (pathes.Length == 0)
+        {
+            return null;
+        }
+
+        var vcs = visual.VisualChildren;
+        if (!(pathes[0] is ControlPath p && p.ChildIndex < vcs.Count))
+        {
+            return null;
+        }
+        var child = vcs[p.ChildIndex];
+        if (child.GetType() != p.ControlType)
+        {
+            return null;
+        }
+
+        if (pathes.Length == 1 && child is IInputElement iv)
+        {
+            return iv;
+        }
+        return SearchVisualSub(child, pathes.Slice(1));
+    }
+
+
+    public static int IndexOf<T>(IReadOnlyList<T> self, Func<T, bool> predicate)
+    {
+        for (int i = 0; i < self.Count; i++)
+        {
+            if (predicate(self[i]))
+                return i;
+        }
+
+        return -1;
+    }
+
     public void Invoke(TMsg msg)
     {
         TState s = modelUpdater.Invoke(msg, this.state);
@@ -85,7 +172,7 @@ public interface IView<TMsg, TState>
     /// <param name="state">current view state.</param>
     /// <param name="viewUpdater">message dispatcher.</param>
     /// <returns></returns>
-    IControl View(TState state, IViewUpdater<TMsg> viewUpdater);
+    Control View(TState state, IViewUpdater<TMsg> viewUpdater);
 }
 
 

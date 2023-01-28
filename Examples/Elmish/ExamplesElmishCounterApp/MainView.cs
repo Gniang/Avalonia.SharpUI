@@ -32,7 +32,7 @@ internal class MainView : IView<Msg, State>
 
 
 
-    public IControl View(State state, IViewUpdater<Msg> v)
+    public Control View(State state, IViewUpdater<Msg> v)
     {
         return new DockPanel()
             .Children(new Control[]
@@ -69,17 +69,17 @@ internal class MainView : IView<Msg, State>
                 .DockBottom()
                 .OnClick((s, e) => v.Invoke(new SetCount(state.Count * 2)))
                 ,
-                new TextBox()
+                new NumericUpDown()
                 {
-                    Text = $"{state.Count}",
+                    Value =state.Count,
                     HorizontalAlignment = HorizontalAlignment.Stretch
                 }
                 .DockBottom()
-                .On(nameof(TextBox.TextChanged), (object? s, TextChangedEventArgs e) =>
+                .On(nameof(NumericUpDown.ValueChanged), (object? s, NumericUpDownValueChangedEventArgs e) =>
                 {
-                    if (int.TryParse((s as TextBox)?.Text, out int i))
+                    if (s is NumericUpDown n && n.Value is decimal d)
                     {
-                        v.Invoke(new SetCount(i));
+                        v.Invoke(new SetCount((int)d));
                     }
                 })
                 ,
