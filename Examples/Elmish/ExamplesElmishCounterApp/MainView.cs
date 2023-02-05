@@ -14,12 +14,13 @@ internal class MainView : IView<Msg, State>
 {
     public record State(int Count);
 
-    internal interface Msg
+    public record Msg
     {
-        public record struct Increment() : Msg;
-        public record struct Decrement() : Msg;
-        public record struct SetCount(int Count) : Msg;
-        public record struct Reset() : Msg;
+        private Msg() { }
+        public record Increment() : Msg;
+        public record Decrement() : Msg;
+        public record SetCount(int Count) : Msg;
+        public record Reset() : Msg;
     };
 
 
