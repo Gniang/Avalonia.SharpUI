@@ -14,19 +14,22 @@ internal class MainView : IView<Msg, State>
 {
     public record State(int Count);
 
-    public record Msg { };
-    public record Increment() : Msg;
-    public record Decrement() : Msg;
-    public record SetCount(int Count) : Msg;
-    public record Reset() : Msg;
+    internal interface Msg
+    {
+        public record struct Increment() : Msg;
+        public record struct Decrement() : Msg;
+        public record struct SetCount(int Count) : Msg;
+        public record struct Reset() : Msg;
+    };
+
 
     public static State Update(Msg msg, State s)
         => msg switch
         {
-            Increment _ => s with { Count = s.Count + 1 },
-            Decrement _ => s with { Count = s.Count - 1 },
-            SetCount x => s with { Count = x.Count },
-            Reset _ => s with { Count = 0 },
+            Msg.Increment _ => s with { Count = s.Count + 1 },
+            Msg.Decrement _ => s with { Count = s.Count - 1 },
+            Msg.SetCount x => s with { Count = x.Count },
+            Msg.Reset _ => s with { Count = 0 },
             _ => throw new Exception($"unexperimental msg.{msg}"),
         };
 
@@ -43,7 +46,7 @@ internal class MainView : IView<Msg, State>
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                 }
                 .DockBottom()
-                .OnClick((s, e) => v.Invoke(new Reset()))
+                .OnClick((s, e) => v.Invoke(new Msg.Reset()))
                 ,
                 new Button()
                 {
@@ -51,7 +54,7 @@ internal class MainView : IView<Msg, State>
                     HorizontalAlignment = HorizontalAlignment.Stretch
                 }
                 .DockBottom()
-                .OnClick((s, e) => v.Invoke(new Decrement()))
+                .OnClick((s, e) => v.Invoke(new Msg.Decrement()))
                 ,
                 new Button()
                 {
@@ -59,7 +62,7 @@ internal class MainView : IView<Msg, State>
                     HorizontalAlignment = HorizontalAlignment.Stretch
                 }
                 .DockBottom()
-                .OnClick((s, e) => v.Invoke(new Increment()))
+                .OnClick((s, e) => v.Invoke(new Msg.Increment()))
                 ,
                 new Button()
                 {
@@ -67,7 +70,7 @@ internal class MainView : IView<Msg, State>
                     HorizontalAlignment = HorizontalAlignment.Stretch
                 }
                 .DockBottom()
-                .OnClick((s, e) => v.Invoke(new SetCount(state.Count * 2)))
+                .OnClick((s, e) => v.Invoke(new Msg.SetCount(state.Count * 2)))
                 ,
                 new NumericUpDown()
                 {
@@ -79,7 +82,7 @@ internal class MainView : IView<Msg, State>
                 {
                     if (s is NumericUpDown n && DecimalToInt(n.Value) is int d)
                     {
-                        v.Invoke(new SetCount(d));
+                        v.Invoke(new Msg.SetCount(d));
                     }
                 })
                 ,
