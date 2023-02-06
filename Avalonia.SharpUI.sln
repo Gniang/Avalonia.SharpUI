@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33027.164
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalonia.SharpUI", "Avalonia.SharpUI\Avalonia.SharpUI.csproj", "{83FBA016-0A83-4FE2-A95A-EB54D18A414E}"
 EndProject
@@ -30,6 +30,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elmish", "Elmish", "{3D919AC8-FFA0-48A4-8EB0-1E8F5B25A493}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplesElmishCounterApp", "Examples\Elmish\ExamplesElmishCounterApp\ExamplesElmishCounterApp.csproj", "{2FE591C0-FA34-4EC0-8F7A-04D695C6B6AC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplesElmishClockApp", "Examples\Elmish\ExamplesElmishClockApp\ExamplesElmishClockApp.csproj", "{C05CC38C-5AB9-4977-BCAC-B1E966FF1726}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalonia.SharpUI.Elmish", "Avalonia.SharpUI.Elmish\Avalonia.SharpUI.Elmish.csproj", "{CB9A0E27-7D05-4F92-84E8-86DB0595270D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +69,14 @@ Global
 		{2FE591C0-FA34-4EC0-8F7A-04D695C6B6AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FE591C0-FA34-4EC0-8F7A-04D695C6B6AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FE591C0-FA34-4EC0-8F7A-04D695C6B6AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C05CC38C-5AB9-4977-BCAC-B1E966FF1726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C05CC38C-5AB9-4977-BCAC-B1E966FF1726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C05CC38C-5AB9-4977-BCAC-B1E966FF1726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C05CC38C-5AB9-4977-BCAC-B1E966FF1726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB9A0E27-7D05-4F92-84E8-86DB0595270D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB9A0E27-7D05-4F92-84E8-86DB0595270D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB9A0E27-7D05-4F92-84E8-86DB0595270D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB9A0E27-7D05-4F92-84E8-86DB0595270D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +90,7 @@ Global
 		{257A7309-E245-4303-B27D-44BC7E7B8003} = {A0118583-82D3-46B4-A83F-258451266E79}
 		{3D919AC8-FFA0-48A4-8EB0-1E8F5B25A493} = {7C3F1AEF-5783-4798-AD6A-5123E3B0B7EB}
 		{2FE591C0-FA34-4EC0-8F7A-04D695C6B6AC} = {3D919AC8-FFA0-48A4-8EB0-1E8F5B25A493}
+		{C05CC38C-5AB9-4977-BCAC-B1E966FF1726} = {3D919AC8-FFA0-48A4-8EB0-1E8F5B25A493}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0E512BA-5704-447D-A1C3-E9485DFD5BF8}

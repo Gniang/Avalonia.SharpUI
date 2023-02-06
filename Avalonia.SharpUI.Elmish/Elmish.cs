@@ -3,13 +3,11 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
-using ExamplesCounterApp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
-using static ExamplesCounterApp.MainView;
 
 namespace Avalonia.SharpUI.Elmish;
 
@@ -19,12 +17,13 @@ public class Elmish
 
     public static readonly List<ElmishItem> items = new();
 
-    public static TControl Init<TControl, TMsg, TState>(TControl control,
-                                                    IView<TMsg, TState> view,
-                                                    Func<TMsg, TState, TState> modelUpdater,
-                                                    TState initState
-                                                )
-        where TControl : ContentControl
+    public static Program<TControl, TMsg> Init<TControl, TMsg, TState>(
+        TControl control,
+        IView<TMsg, TState> view,
+        Func<TMsg, TState, TState> modelUpdater,
+        TState initState
+    )
+        where TControl : ContentControl, new()
         where TState : IEquatable<TState>
     {
         var vu = new ViewUpdater<TMsg, TState>(control, view, modelUpdater, initState);
@@ -38,7 +37,16 @@ public class Elmish
         };
 
         vu.SetState(initState);
-        return control;
+        return new(control, vu);
+    }
+}
+public record Program<TControl, TMsg>(TControl Control, IViewUpdater<TMsg> ViewUpdater)
+    where TControl : ContentControl, new()
+{
+    public Program<TControl, TMsg> Inspect(Action<TControl, IViewUpdater<TMsg>> inspectAction)
+    {
+        inspectAction(Control, ViewUpdater);
+        return this;
     }
 }
 
