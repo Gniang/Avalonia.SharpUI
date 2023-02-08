@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplesElmishClockApp", "E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalonia.SharpUI.Elmish", "Avalonia.SharpUI.Elmish\Avalonia.SharpUI.Elmish.csproj", "{CB9A0E27-7D05-4F92-84E8-86DB0595270D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplesElmishGameOfLife", "Examples\Elmish\ExamplesElmishGameOfLife\ExamplesElmishGameOfLife.csproj", "{70CB3A50-9147-4C7D-A750-BE4F9E126A31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{CB9A0E27-7D05-4F92-84E8-86DB0595270D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB9A0E27-7D05-4F92-84E8-86DB0595270D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB9A0E27-7D05-4F92-84E8-86DB0595270D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70CB3A50-9147-4C7D-A750-BE4F9E126A31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70CB3A50-9147-4C7D-A750-BE4F9E126A31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70CB3A50-9147-4C7D-A750-BE4F9E126A31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70CB3A50-9147-4C7D-A750-BE4F9E126A31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +97,7 @@ Global
 		{3D919AC8-FFA0-48A4-8EB0-1E8F5B25A493} = {7C3F1AEF-5783-4798-AD6A-5123E3B0B7EB}
 		{2FE591C0-FA34-4EC0-8F7A-04D695C6B6AC} = {3D919AC8-FFA0-48A4-8EB0-1E8F5B25A493}
 		{C05CC38C-5AB9-4977-BCAC-B1E966FF1726} = {3D919AC8-FFA0-48A4-8EB0-1E8F5B25A493}
+		{70CB3A50-9147-4C7D-A750-BE4F9E126A31} = {3D919AC8-FFA0-48A4-8EB0-1E8F5B25A493}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0E512BA-5704-447D-A1C3-E9485DFD5BF8}

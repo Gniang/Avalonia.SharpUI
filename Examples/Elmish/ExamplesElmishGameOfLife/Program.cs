@@ -7,7 +7,7 @@ using Avalonia.Threading;
 using System;
 using System.Diagnostics;
 
-namespace ExamplesClockApp;
+namespace ExamplesElmishGameOfLife;
 
 class Program
 {
@@ -27,26 +27,26 @@ class Program
             this.Styles.Add(new FluentTheme(new Uri("avares://ControlCatalog/Styles")) { Mode = FluentThemeMode.Light });
             Window window = new Window
             {
-                Title = "Clock Example",
-                Height = 400.0,
-                Width = 400.0,
+                Title = "GameOfLife Example",
+                Height = 500.0,
+                Width = 500.0,
             };
 
-            void updateClock(IViewUpdater<Clock.Msg> vu)
+            void updateBoard(IViewUpdater<Board.Msg> vu)
             {
                 DispatcherTimer.Run(() =>
                 {
-                    vu.Invoke(new Clock.Msg.Tick(DateTime.Now));
+                    //vu.Invoke(new Board.Msg.BoardMsg(DateTime.Now));
                     return true;
                 },
                 TimeSpan.FromMilliseconds(1000.0));
             }
 
-            Elmish.Init(window, new Clock(), Clock.Update, Clock.Init())
-                .Inspect((w, vu) =>
+            Elmish.Init(window, new Board(), Board.Update, Board.Init())
+                .Inspect((w,  vu) =>
                 {
-                    w.Closed += (s, e) => { Debug.WriteLine("The window has been closed."); };
-                    updateClock(vu);
+                    w.Closed += (object? s, EventArgs e) => { Debug.WriteLine("The window has been closed."); };
+                    updateBoard(vu);
                 });
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

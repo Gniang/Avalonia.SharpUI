@@ -5,14 +5,14 @@ using Avalonia.Layout;
 using Microsoft.VisualBasic;
 using System.Text.RegularExpressions;
 using System;
-using static ExamplesClockApp.Clock;
+using static ExamplesCounterApp.Main;
 using Avalonia.SharpUI.Elmish;
 using Avalonia.Media;
 using Avalonia.Controls.Shapes;
 
-namespace ExamplesClockApp;
+namespace ExamplesCounterApp;
 
-internal class Clock : IView<Msg, State>
+internal class Main : IView<Msg, State>
 {
     public record State(DateTime Time);
 
@@ -21,13 +21,13 @@ internal class Clock : IView<Msg, State>
     public record Msg
     {
         private Msg() { }
-        public record Tick(DateTime Time) : Msg;
+        public record BoardMsg(DateTime Time) : Msg;
     }
 
     public static State Update(Msg msg, State s)
         => msg switch
         {
-            Msg.Tick t => s with { Time = t.Time },
+            Msg.BoardMsg t => s with { Time = t.Time },
             _ => throw new Exception($"unexperimental msg.{msg}"),
         };
 
