@@ -24,7 +24,8 @@ class Program
     {
         public override void OnFrameworkInitializationCompleted()
         {
-            this.Styles.Add(new FluentTheme(new Uri("avares://ControlCatalog/Styles")) { Mode = FluentThemeMode.Light });
+            this.Styles.Add(new FluentTheme());
+            this.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
             Window window = new Window
             {
                 Title = "GameOfLife Example",
@@ -32,18 +33,18 @@ class Program
                 Width = 500.0,
             };
 
-            void updateBoard(IViewUpdater<Board.Msg> vu)
+            void updateBoard(IViewUpdater<MainView.Msg> vu)
             {
                 DispatcherTimer.Run(() =>
                 {
-                    //vu.Invoke(new Board.Msg.BoardMsg(DateTime.Now));
+                    vu.Invoke(new MainView.Msg.BoardMsg(new Board.Msg.Evolve()));
                     return true;
                 },
-                TimeSpan.FromMilliseconds(1000.0));
+                TimeSpan.FromMilliseconds(100.0));
             }
 
-            Elmish.Init(window, new Board(), Board.Update, Board.Init())
-                .Inspect((w,  vu) =>
+            Elmish.Init(window, new MainView(), MainView.Update, MainView.Init())
+                .Inspect((w, vu) =>
                 {
                     w.Closed += (object? s, EventArgs e) => { Debug.WriteLine("The window has been closed."); };
                     updateBoard(vu);

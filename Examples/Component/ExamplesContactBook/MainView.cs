@@ -483,7 +483,7 @@ internal class ContactListView : UserControl
 
             new ListBox()
             {
-                [!ListBox.ItemsProperty] = fc.ToBinding(),
+                [!ListBox.ItemsSourceProperty] = fc.ToBinding(),
                 [!ListBox.SelectedItemProperty] = selectedContact.ToBinding(),
                 ItemTemplate = new FuncDataTemplate<Contact>((value, namescope) =>
                 {

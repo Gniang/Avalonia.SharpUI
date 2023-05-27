@@ -4,5 +4,28 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        {
+            "name": "ExamplesContactBook",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_ExamplesContactBook",
+            "program": "${workspaceFolder}/Examples/Component/ExamplesContactBook/bin/Debug/net6.0/ExamplesContactBook.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
+            "name": "ExamplesCounterApp",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_ExamplesCounterApp",
+            // "program": "${workspaceFolder}/Examples/Component/ExamplesCounterApp/bin/Debug/net6.0/win10-x64/ExamplesCounterApp.exe",
+            "program": "${workspaceFolder}/Examples/Component/ExamplesCounterApp/bin/Debug/net6.0/ExamplesCounterApp.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        }
     ]
 }

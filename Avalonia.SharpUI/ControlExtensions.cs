@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Interactivity;
+using System.Reactive;
 
 namespace Avalonia.SharpUI;
 
@@ -29,7 +30,7 @@ public static class ControlExtensions
     /// <param name="bindingItem">binding item.</param>
     /// <returns></returns>
     public static TControl SetBind<TControl>(this TControl control, AvaloniaProperty prorperty, IBinding bindingItem)
-    where TControl : IAvaloniaObject
+    where TControl : AvaloniaObject
     {
         control.Bind(prorperty, bindingItem);
         return control;
@@ -45,7 +46,7 @@ public static class ControlExtensions
                                                      string bindingPath,
                                                      BindingMode mode = BindingMode.Default,
                                                      IValueConverter? converter = null)
-    where TControl : IAvaloniaObject
+    where TControl : AvaloniaObject
     {
         return SetBind(control, prorperty, new Binding(bindingPath, mode) { Source = bindingViewModel, Converter = converter });
     }
@@ -56,7 +57,7 @@ public static class ControlExtensions
                                                 IObservableState<T> bindingItem,
                                                 BindingMode mode = BindingMode.Default,
                                                 IValueConverter? converter = null)
-    where TControl : IAvaloniaObject
+    where TControl : AvaloniaObject
     {
         return SetBind(control, prorperty, new Binding(nameof(IObservableState<T>.Value), mode) { Source = bindingItem, Converter = converter });
     }
@@ -64,7 +65,7 @@ public static class ControlExtensions
     public static TAvaloniaObject SetObservable<TAvaloniaObject, T>(this TAvaloniaObject avaloniaObject,
                                                      AvaloniaProperty<T> prorperty,
                                                      Action<IObservable<T>> action)
-    where TAvaloniaObject : IAvaloniaObject
+    where TAvaloniaObject : AvaloniaObject
     {
         // TODO: event leak;
         action.Invoke(avaloniaObject.GetObservable(prorperty));
@@ -74,7 +75,7 @@ public static class ControlExtensions
     public static TAvaloniaObject SetSubscribe<TAvaloniaObject, T>(this TAvaloniaObject avaloniaObject,
                                                  AvaloniaProperty<T> prorperty,
                                                  Action<T> action)
-    where TAvaloniaObject : IAvaloniaObject
+    where TAvaloniaObject : AvaloniaObject
     {
         // TODO: event leak;
         avaloniaObject.GetObservable(prorperty).Subscribe(action);
@@ -106,7 +107,7 @@ public static class ControlExtensions
     /// </para>
     /// </summary>
     public static T On<T, TEvent>(this T control, string eventName, EventHandler<TEvent> eventHandler)
-    where T : IControl
+    where T : StyledElement
     where TEvent : EventArgs
     {
         var ev = typeof(T).GetEvent(eventName);
@@ -126,7 +127,7 @@ public static class ControlExtensions
     }
 
 
-    public static Window? GetOwnerWindow(this IControl control)
+    public static Window? GetOwnerWindow(this StyledElement control)
     {
         var parent = control;
         while (parent != null)
@@ -146,8 +147,8 @@ public static class ControlExtensions
     /// <param name="panel">parent control</param>
     /// <param name="controls">child controls</param>
     /// <returns></returns>
-    public static T Children<T>(this T panel, IEnumerable<IControl> controls)
-    where T : IPanel
+    public static T Children<T>(this T panel, IEnumerable<Control> controls)
+    where T : Panel
     {
         foreach (var c in controls)
         {
@@ -157,10 +158,18 @@ public static class ControlExtensions
     }
 
     /// <inheritdoc cref="ControlExtensions.Children"/>
-    public static T Children<T>(this T panel, params IControl[] controls)
-    where T : IPanel
+    public static T Children<T>(this T panel, params Control[] controls)
+    where T : Panel
     {
         return Children(panel, controls.AsEnumerable());
+    }
+
+    /// <inheritdoc cref="ControlExtensions.Children"/>
+    public static T Children<T>(this T panel, Func<T, IEnumerable<Control>> mapper)
+    where T : Panel
+    {
+        var controls = mapper(panel);
+        return Children(panel, controls);
     }
 
     public static T DockLeft<T>(this T control)

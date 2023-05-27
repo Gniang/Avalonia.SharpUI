@@ -17,6 +17,12 @@ class Program
     {
         AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .With(new Win32PlatformOptions
+            {
+                UseWgl = false,
+                UseWindowsUIComposition = false,
+                AllowEglInitialization = false,
+            })
             .LogToTrace()
             .UseSkia()
             .StartWithClassicDesktopLifetime(args);
@@ -26,7 +32,8 @@ class Program
     {
         public override void OnFrameworkInitializationCompleted()
         {
-            this.Styles.Add(new FluentTheme(baseUri: null!) { Mode = FluentThemeMode.Dark });
+            this.Styles.Add(new FluentTheme());
+            this.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
             Window window = new Window
             {
                 Title = "Drawing App",

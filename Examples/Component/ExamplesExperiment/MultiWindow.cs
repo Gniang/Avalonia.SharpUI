@@ -74,15 +74,15 @@ public class MultiWindow
 
 public static class MultiWindowExtensions
 {
-    public static T Navigate<T>(this IControl parent, T child) where T : Window
+    public static T Navigate<T>(this Control parent, T child) where T : Window
      => MultiWindow.Navigate(child);
 
-    public static T? FindWindow<T>(this IControl control) where T : IPageView
+    public static T? FindWindow<T>(this Control control) where T : IPageView
      => MultiWindow.Find<T>();
 
-    public static T? FindWindow<T>(this IControl control, Func<T, bool> predicate) where T : IPageView
+    public static T? FindWindow<T>(this Control control, Func<T, bool> predicate) where T : IPageView
      => MultiWindow.Find(predicate);
 
-    public static T? FindWindow<T>(this IControl control, string windowName) where T : IPageView
+    public static T? FindWindow<T>(this Control control, string windowName) where T : IPageView
      => MultiWindow.Find<T>(windowName);
 }

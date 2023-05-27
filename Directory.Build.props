@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
-        <AvaloniaVersion>11.0.0-preview3</AvaloniaVersion>
-        <FuncUIVersion>0.1.0-preview1</FuncUIVersion>
+        <AvaloniaVersion>11.0.0-preview8</AvaloniaVersion>
+        <AvaloniaReactiveVersion>5.0.0</AvaloniaReactiveVersion>
         <Authors>Gniang</Authors>
     </PropertyGroup>
 </Project>

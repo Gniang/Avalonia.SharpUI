@@ -3,7 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>10.0</LangVersion>
-    <Version>$(FuncUIVersion)</Version>
+    <Version>$(AvaloniaVersion)</Version>
     <PackageProjectUrl>https://github.com/Gniang/Avalonia.SharpUI</PackageProjectUrl>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Gniang/Avalonia.SharpUI</RepositoryUrl>
@@ -27,5 +27,6 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="System.Reactive" Version="$(AvaloniaReactiveVersion)" />
   </ItemGroup>
 </Project>

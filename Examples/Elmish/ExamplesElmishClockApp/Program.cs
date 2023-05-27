@@ -24,7 +24,8 @@ class Program
     {
         public override void OnFrameworkInitializationCompleted()
         {
-            this.Styles.Add(new FluentTheme(new Uri("avares://ControlCatalog/Styles")) { Mode = FluentThemeMode.Light });
+            this.Styles.Add(new FluentTheme());
+            this.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
             Window window = new Window
             {
                 Title = "Clock Example",

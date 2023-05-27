@@ -8,12 +8,12 @@ namespace Avalonia.SharpUI;
 
 public static class RichTextBlockExtensions
 {
-    public static RichTextBlock Inlines(this RichTextBlock block, InlineCollection inlines)
+    public static SelectableTextBlock Inlines(this SelectableTextBlock block, InlineCollection inlines)
     {
         block.Inlines = inlines;
         return block;
     }
-    public static RichTextBlock Inlines(this RichTextBlock block, params Inline[] inlines)
+    public static SelectableTextBlock Inlines(this SelectableTextBlock block, params Inline[] inlines)
     {
         var i = new InlineCollection();
         i.AddRange(inlines);

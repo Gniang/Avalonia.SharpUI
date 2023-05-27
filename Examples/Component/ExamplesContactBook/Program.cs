@@ -21,7 +21,8 @@ class Program
     {
         public override void OnFrameworkInitializationCompleted()
         {
-            this.Styles.Add(new FluentTheme(baseUri: null!) { Mode = FluentThemeMode.Dark });
+            this.Styles.Add(new FluentTheme());
+            this.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
             Window window = new Window
             {
                 Title = "Examples ContactBook",

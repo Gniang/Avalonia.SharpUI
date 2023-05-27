@@ -38,7 +38,7 @@ internal class MainView : UserControl
                     }
                  })
                 ,
-                new RichTextBlock()
+                new SelectableTextBlock()
                 {
                     FontSize = 48.0,
                     HorizontalAlignment = HorizontalAlignment.Center

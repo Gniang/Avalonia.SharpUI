@@ -75,7 +75,7 @@ namespace avalonia_play
                         ,
 
                     new DataGrid() { AutoGenerateColumns = true }
-                        .SetBind(DataGrid.ItemsProperty, vm, nameof(vm.Items))
+                        .SetBind(DataGrid.ItemsSourceProperty, vm, nameof(vm.Items))
                         //   .SetGrid(1, 0)
                         .SetGrid(rowIndex: 3, 1)
                 //.Columns((1..500).Select(x => new DataGridTextColumn() { Binding = new Binding($"Column{x}") }))
