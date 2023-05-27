@@ -485,9 +485,9 @@ internal class ContactListView : UserControl
             {
                 [!ListBox.ItemsSourceProperty] = fc.ToBinding(),
                 [!ListBox.SelectedItemProperty] = selectedContact.ToBinding(),
-                ItemTemplate = new FuncDataTemplate<Contact>((value, namescope) =>
+                ItemTemplate = new FuncDataTemplate<Contact?>((value, namescope) =>
                 {
-                    return new TextBlock() { Text = value.FullName };
+                    return new TextBlock() { Text = value?.FullName ?? "" };
                 })
             }
             .DockTop()

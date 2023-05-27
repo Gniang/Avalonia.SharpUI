@@ -13,6 +13,8 @@ using Avalonia.Threading;
 using System.IO;
 using System.Net.Http;
 using Avalonia.Media.Imaging;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ExamplesContactBook;
 
@@ -41,17 +43,24 @@ internal class ContactStore
 }
 
 
-
+record FaceUrlJson([property: JsonPropertyName("url")] string Url);
 
 public class Api
 {
-    private static readonly string randomImageUri = "https://thispersondoesnotexist.com/image";
+    private static readonly string randomImageUri = "https://100k-faces.glitch.me";
+    private static readonly string randomImagePath = "/random-image-url";
     private static readonly HttpClient httpClient = new HttpClient();
 
     public static async Task<Bitmap> RandomImage()
     {
-        var bytes = await httpClient.GetByteArrayAsync(randomImageUri);
-        using var s = new MemoryStream(bytes);
+        HttpRequestMessage request = new(HttpMethod.Get, randomImageUri + randomImagePath);
+        request.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+        var r = await httpClient.SendAsync(request);
+        var js = await r.Content!.ReadAsStringAsync();
+        var d = JsonSerializer.Deserialize<FaceUrlJson>(js);
+        await Task.Delay(500);
+        var imgBytes = await httpClient.GetByteArrayAsync(d!.Url);
+        using var s = new MemoryStream(imgBytes);
         return new Bitmap(s);
     }
 }

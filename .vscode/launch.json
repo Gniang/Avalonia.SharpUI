@@ -9,23 +9,112 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build_ExamplesContactBook",
-            "program": "${workspaceFolder}/Examples/Component/ExamplesContactBook/bin/Debug/net6.0/ExamplesContactBook.dll",
+            "program": "${workspaceFolder}/Examples/Component/ExamplesContactBook/bin/Debug/net6.0/ExamplesContactBook.exe",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
-            "console": "internalConsole"
+            "console": "internalConsole",
+            "logging": {
+                "moduleLoad": false
+            }
         },
         {
             "name": "ExamplesCounterApp",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build_ExamplesCounterApp",
-            // "program": "${workspaceFolder}/Examples/Component/ExamplesCounterApp/bin/Debug/net6.0/win10-x64/ExamplesCounterApp.exe",
             "program": "${workspaceFolder}/Examples/Component/ExamplesCounterApp/bin/Debug/net6.0/ExamplesCounterApp.exe",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
-            "console": "internalConsole"
-        }
+            "console": "internalConsole",
+            "logging": {
+                "moduleLoad": false
+            }
+        },
+        {
+            "name": "ExamplesDrawingApp",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_ExamplesDrawingApp",
+            "program": "${workspaceFolder}/Examples/Component/ExamplesDrawingApp/bin/Debug/net6.0/ExamplesDrawingApp.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "logging": {
+                "moduleLoad": false
+            }
+        },
+        {
+            "name": "ExamplesExperiment",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_ExamplesExperiment",
+            "program": "${workspaceFolder}/Examples/Component/ExamplesExperiment/bin/Debug/net6.0/ExamplesExperiment.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "logging": {
+                "moduleLoad": false
+            }
+        },
+        {
+            "name": "ExamplesInlineText",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_ExamplesInlineText",
+            "program": "${workspaceFolder}/Examples/Component/ExamplesInlineText/bin/Debug/net6.0/ExamplesInlineText.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "logging": {
+                "moduleLoad": false
+            }
+        },
+        {
+            "name": "ExamplesElmishClockApp",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_ExamplesElmishClockApp",
+            "program": "${workspaceFolder}/Examples/Elmish/ExamplesElmishClockApp/bin/Debug/net6.0/ExamplesElmishClockApp.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "logging": {
+                "moduleLoad": false
+            }
+        },
+        {
+            "name": "ExamplesElmishCounterApp",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_ExamplesElmishCounterApp",
+            "program": "${workspaceFolder}/Examples/Elmish/ExamplesElmishCounterApp/bin/Debug/net6.0/ExamplesElmishCounterApp.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "logging": {
+                "moduleLoad": false
+            }
+        },
+        {
+            "name": "ExamplesElmishGameOfLife",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_ExamplesElmishGameOfLife",
+            "program": "${workspaceFolder}/Examples/Elmish/ExamplesElmishGameOfLife/bin/Debug/net6.0/ExamplesElmishGameOfLife.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "logging": {
+                "moduleLoad": false
+            }
+        },
     ]
 }

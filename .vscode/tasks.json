@@ -28,6 +28,90 @@
                 "cwd": "${workspaceFolder}/Examples/Component/ExamplesCounterApp"
             },
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build_ExamplesDrawingApp",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Examples/Component/ExamplesDrawingApp"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build_ExamplesExperiment",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Examples/Component/ExamplesExperiment"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build_ExamplesInlineText",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Examples/Component/ExamplesInlineText"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build_ExamplesElmishClockApp",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Examples/Elmish/ExamplesElmishClockApp"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build_ExamplesElmishCounterApp",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Examples/Elmish/ExamplesElmishCounterApp"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build_ExamplesElmishGameOfLife",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Examples/Elmish/ExamplesElmishGameOfLife"
+            },
+            "problemMatcher": "$msCompile"
         }
     ]
 }
